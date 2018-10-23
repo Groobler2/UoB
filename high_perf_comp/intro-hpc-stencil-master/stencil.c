@@ -48,7 +48,7 @@ int main(int argc, char *argv[]) {
   output_image(OUTPUT_FILE, nx, ny, image);
   free(image);
 }
-//
+/*
 void stencil(const int nx, const int ny, double *  image, double *  tmp_image) {
   for (int j = 0; j < ny; ++j) {
     for (int i = 0; i < nx; ++i) {
@@ -56,6 +56,39 @@ void stencil(const int nx, const int ny, double *  image, double *  tmp_image) {
       if (i > 0)    tmp_image[j+i*ny] += image[j  +(i-1)*ny] * 0.5/5.0;
       if (i < nx-1) tmp_image[j+i*ny] += image[j  +(i+1)*ny] * 0.5/5.0;
       if (j > 0)    tmp_image[j+i*ny] += image[j-1+i*ny] * 0.5/5.0;
+      if (j < ny-1) tmp_image[j+i*ny] += image[j+1+i*ny] * 0.5/5.0;
+    }
+  }
+}
+*/
+
+void stencil(const int nx, const int ny, double *  image, double *  tmp_image) {
+  for (int j = 0; j < ny; ++j) {  //calculate fading which requires no if...
+    for (int i = 0; i < nx; ++i) {
+      tmp_image[j+i*ny] = image[j+i*ny] * 3.0/5.0;
+    }
+  }
+  
+  for (int j = 0; j < ny; ++j){
+    for (int i = 1; i < nx; ++i){     //exclude top row in calculation (i > 0)...
+      tmp_image[j+i*ny] += image[j  +(i-1)*ny] * 0.5/5.0;
+    }
+  }
+  
+  for (int j = 0; j < ny; ++j) {
+    for (int i = 0; i < nx-1; ++i) {  //exclude bottom row in calculation (i < nx-1)...
+      tmp_image[j+i*ny] += image[j  +(i+1)*ny] * 0.5/5.0;
+    }
+  }
+  
+  for (int j = 1; j < ny; ++j) {      //exclude leftmost column in calculation (j > 0)...
+    for (int i = 0; i < nx; ++i) {  
+      tmp_image[j+i*ny] += image[j-1+i*ny] * 0.5/5.0;
+    }
+  }
+
+  for (int j = 0; j < ny-1; ++j) {    //exclude rightmost column in calculation (j < nx-1)
+    for (int i = 0; i < nx; ++i) {
       if (j < ny-1) tmp_image[j+i*ny] += image[j+1+i*ny] * 0.5/5.0;
     }
   }
