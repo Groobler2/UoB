@@ -48,7 +48,7 @@ int main(int argc, char *argv[]) {
   output_image(OUTPUT_FILE, nx, ny, image);
   free(image);
 }
-/*
+
 void stencil(const int nx, const int ny, double *  image, double *  tmp_image) {
   for (int j = 0; j < ny; ++j) {
     for (int i = 0; i < nx; ++i) {
@@ -59,78 +59,6 @@ void stencil(const int nx, const int ny, double *  image, double *  tmp_image) {
       if (j < ny-1) tmp_image[j+i*ny] += image[j+1+i*ny] * 0.5/5.0;
     }
   }
-}
-*/
-
-void stencil(const int nx, const int ny, double *  image, double *  tmp_image) {
-  //calculate values of corners
-  //top left j=0 i=0
-  tmp_image[0] = image[0] * 3.0/5.0;
-  
-  tmp_image[0] += image[ny] * 0.5/5.0;
-  tmp_image[0] += image[1] * 0.5/5.0;
-  //top right j=0 i=nx-1
-  tmp_image[(nx-1)*ny] = image[(nx-1)*ny] * 3.0/5.0;
-  
-  tmp_image[(nx-1)*ny] += image[((nx-1)-1)*ny] * 0.5/5.0;
-  tmp_image[(nx-1)*ny] += image[1+(nx-1)*ny] * 0.5/5.0;
-  //bottom right j=ny-1 i=nx-1
-  tmp_image[(ny-1)+(nx-1)*ny] = image[(ny-1)+(nx-1)*ny] * 3.0/5.0;
-  
-  tmp_image[(ny-1)+(nx-1)*ny] += image[(ny-1)  +((nx-1)-1)*ny] * 0.5/5.0;
-  tmp_image[(ny-1)+(nx-1)*ny] += image[(ny-1)-1+(nx-1)*ny] * 0.5/5.0;
-  //bottom left j=ny-1 i=0
-  tmp_image[(ny-1)] = image[(ny-1)] * 3.0/5.0;
-  
-  tmp_image[(ny-1)] += image[(ny-1)  +ny] * 0.5/5.0;
-  tmp_image[(ny-1)] += image[-1] * 0.5/5.0;
-  
-  //calculate edge rows and columns (ignoring corners...)
-  //top row
-  for (int i = 1; i < nx-1; ++i){ //j=0
-    tmp_image[i*ny] = image[i*ny] * 3.0/5.0;
-    
-    tmp_image[i*ny] += image[(i-1)*ny] * 0.5/5.0;
-    tmp_image[i*ny] += image[(i+1)*ny] * 0.5/5.0;
-    tmp_image[i*ny] += image[1+i*ny] * 0.5/5.0;
-  }
-  //left column
-  for (int j = 1; j < ny-1; ++j){ //i=0
-    tmp_image[j] = image[j] * 3.0/5.0;
-    
-    tmp_image[j] += image[j  + ny] * 0.5/5.0;
-    tmp_image[j] += image[j-1] * 0.5/5.0;
-    tmp_image[j] += image[j+1] * 0.5/5.0;
-  }
-  //bottom row
-  for (int i = 1; i < nx-1; ++i){ //j=ny-1
-    tmp_image[(ny-1)+i*ny] = image[(ny-1)+i*ny] * 3.0/5.0;
-    
-    tmp_image[(ny-1)+i*ny] += image[(ny-1)  +(i-1)*ny] * 0.5/5.0;
-    tmp_image[(ny-1)+i*ny] += image[(ny-1)  +(i+1)*ny] * 0.5/5.0;
-    tmp_image[(ny-1)+i*ny] += image[(ny-1)-1+i*ny] * 0.5/5.0;
-  }
-  //right column
-  for (int j = 1; j < ny-1; ++j){ //i=nx-1
-    tmp_image[j+(nx-1)*ny] = image[j+(nx-1)*ny] * 3.0/5.0;
-    
-    tmp_image[j+(nx-1)*ny] += image[j  +((nx-1)-1)*ny] * 0.5/5.0;
-    tmp_image[j+(nx-1)*ny] += image[j-1+(nx-1)*ny] * 0.5/5.0;
-    tmp_image[j+(nx-1)*ny] += image[j+1+(nx-1)*ny] * 0.5/5.0;
-  }
-  
-  //calculate center values
-  for (int j = 1; j < ny-1; ++j) {
-    for (int i = 1; i < nx-1; ++i) {
-      tmp_image[j+i*ny] = image[j+i*ny] * 3.0/5.0;
-      
-      tmp_image[j+i*ny] += image[j  +(i-1)*ny] * 0.5/5.0;
-      tmp_image[j+i*ny] += image[j  +(i+1)*ny] * 0.5/5.0;
-      tmp_image[j+i*ny] += image[j-1+i*ny] * 0.5/5.0;
-      tmp_image[j+i*ny] += image[j+1+i*ny] * 0.5/5.0;
-    }
-  }
-  
 }
 
 // Create the input image
